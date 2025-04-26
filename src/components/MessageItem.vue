@@ -6,6 +6,8 @@
   </template>
   
   <script setup>
+  import axios from '../axios'
+
   defineProps({
     message: {
       type: Object,

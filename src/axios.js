@@ -1,11 +1,8 @@
+// src/axios.js
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: 'https://reqres.in/api', // Şu an test için bir fake API kullanıyoruz
-  timeout: 5000,
-  headers: {
-    'Content-Type': 'application/json'
-  }
+  baseURL: import.meta.env.VITE_API_URL
 })
 
-export default instance;
+export default instance

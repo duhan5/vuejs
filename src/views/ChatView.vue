@@ -42,7 +42,8 @@
   <script setup>
   
   import { ref, onMounted, computed } from 'vue'
-  import axios from 'axios'
+  import axios from '../axios'
+
   import { useRouter } from 'vue-router'
   
   const API = 'http://localhost:3000'

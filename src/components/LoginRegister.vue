@@ -47,7 +47,9 @@
   <script>
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
-  import axios from 'axios'
+
+  import axios from '../axios'
+
   
   export default {
     name: "LoginRegister",
@@ -62,7 +64,7 @@
       const passwordReg = ref("")
       const confirmReg = ref("")
       const emptyFields = ref(false)
-      const API = 'http://localhost:3000'
+      
       
   
       const toggleRegister = () => {
@@ -77,10 +79,12 @@
       }
 
       try {
-        const res = await axios.post(`${API}/login`, {
-          login: loginField.value,
-          password: passwordLogin.value,
-        })
+        const res = await axios.post('/login', {
+        login: loginField.value,
+        password: passwordLogin.value,
+      })
+
+
         console.log('Login successful:', res.data)
         alert('Welcome!')
 
@@ -105,11 +109,13 @@
           return
         }
         try {
-          const res = await axios.post(`${API}/register`, {
-            username: usernameReg.value,
-            email: emailReg.value,
-            password: passwordReg.value,
-          })
+          await axios.post('/register', {
+          username: usernameReg.value,
+          email: emailReg.value,
+          password: passwordReg.value
+        })
+
+
           console.log('Register successful:', res.data)
           alert('Registration successful!')
           
