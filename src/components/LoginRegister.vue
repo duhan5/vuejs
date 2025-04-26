@@ -30,6 +30,10 @@
             <div v-else class="card register" :class="{ error: emptyFields }">
               <h1>Sign Up</h1>
               <form @submit.prevent="doRegister">
+                <!-- Başarı veya hata mesajı -->
+
+                <p v-if="registerMessage" style="color: green;">{{ registerMessage }}</p>
+                <p v-if="registerError" style="color: red;">{{ registerError }}</p>
                 <input v-model="usernameReg" type="text" class="form-control" placeholder="Username" required />
                 <input v-model="emailReg" type="email" class="form-control" placeholder="Email" required />
                 <input v-model="passwordReg" type="password" class="form-control" placeholder="Password" required />
@@ -64,6 +68,9 @@
       const passwordReg = ref("")
       const confirmReg = ref("")
       const emptyFields = ref(false)
+      const registerMessage = ref("")
+      const registerError = ref("")
+
       
       
   
@@ -100,31 +107,41 @@
       }
   
       const doRegister = async () => {
-        if (!emailReg.value || !passwordReg.value || !confirmReg.value) {
-          emptyFields.value = true
-          return
-        }
-        if (passwordReg.value !== confirmReg.value) {
-          alert('Passwords do not match!')
-          return
-        }
-        try {
-          await axios.post('/register', {
+      registerMessage.value = ""
+      registerError.value = ""
+
+      if (!emailReg.value || !passwordReg.value || !confirmReg.value || !usernameReg.value) {
+        emptyFields.value = true
+        registerError.value = "Tüm alanları doldurun."
+        return
+      }
+
+      if (passwordReg.value !== confirmReg.value) {
+        registerError.value = "Şifreler uyuşmuyor."
+        return
+      }
+
+      try {
+        const res = await axios.post('/register', {
           username: usernameReg.value,
           email: emailReg.value,
-          password: passwordReg.value
+          password: passwordReg.value,
         })
 
-
-          console.log('Register successful:', res.data)
-          alert('Registration successful!')
-          
-          toggleRegister()
-        } catch (error) {
-          console.error('Register failed:', error)
-          emptyFields.value = true
+        registerMessage.value = "Kayıt başarılı! Şimdi giriş yapabilirsiniz."
+        toggleRegister()
+      } catch (error) {
+        if (error.response?.status === 500 && error.response?.data?.error?.includes("tekil")) {
+          registerError.value = "Bu e-posta adresi zaten kayıtlı."
+        } else {
+          registerError.value = "Kayıt sırasında bir hata oluştu."
         }
+
+        console.error('Register failed:', error)
+        emptyFields.value = true
       }
+    }
+
       
       const forgotPassword = () => {
   alert("Şifre sıfırlama bağlantısı e-postanıza gönderilecek (demo).");
@@ -145,6 +162,8 @@
         doLogin,
         doRegister,
         forgotPassword,
+        registerMessage,
+        registerError,
       }
     }
   }
