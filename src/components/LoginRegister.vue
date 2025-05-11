@@ -27,6 +27,8 @@
             </div>
   
             <!-- REGISTER FORM -->
+
+                 <!-- REGISTER FORM -->
             <div v-else class="card register" :class="{ error: emptyFields }">
               <h1>Sign Up</h1>
               <form @submit.prevent="doRegister">
